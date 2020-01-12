@@ -1,0 +1,22 @@
+doctype html
+html
+  include /../../static/assets/lib/ldui/pug/ldui.pug
+  head
+    +css("https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css")
+    +css("assets/lib/ldui/ldui.min.css")
+  body.p-4
+    .w-1024.rwd.mx-auto
+      .text-center
+        h4.mb-2 台灣縣市統計指標
+        select.form-control.w-50.mx-auto.mb-4(ld="select")
+          option(ld-each="option")
+      #map.mx-auto.shadow-sm(style="width:640px;height:480px")
+      +script("https://d3js.org/d3.v4.js")
+      +script("https://d3js.org/topojson.v2.min.js")
+      +script("https://d3js.org/d3-color.v1.min.js")
+      +script("https://d3js.org/d3-interpolate.v1.min.js")
+      +script("https://d3js.org/d3-scale-chromatic.v1.min.js")
+      +script("assets/lib/pdmap.tw/pdmaptw.js")
+      +script("assets/lib/ldui/ldui.min.js")
+      +script("https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.1.0/papaparse.min.js")
+      +script("/js/index.js")

@@ -9,7 +9,7 @@ progress-bar = (total = 10, text = "converting") ->
     { total: total, width: 60, complete: '#' }
   )
 
-
+patch = -> it.replace /臺/g, '台'
 files = fs.readdir-sync \../raw/county/ .map -> do
   src: "../raw/county/#it"
   des: "../dist/county/#it".replace(/\.px$/, ".csv")
@@ -35,7 +35,7 @@ for file in files =>
   for i from 0 til stubs["期間"].length
     time = stubs["期間"][i]
     for j from 0 til stubs["縣市"].length
-      county = stubs["縣市"][j].trim!
+      county = patch(stubs["縣市"][j].trim!)
       for k from 0 til stubs["指標"].length 
         index = stubs["指標"][k].trim!
         count = j + stubs["縣市"].length * ( i + k * stubs["期間"].length)
@@ -53,8 +53,15 @@ for index,times of idx =>
   for pair in pairs =>
     lines.push([pair.0] ++ countynames.map(-> pair.1[it]))
   fs.write-file-sync "../dist/county/index/#{index}.csv", lines.map(->it.join(\,)).join(\\n)
+  json = lines
+    .filter (d,i) -> i > 0
+    .map (v) ->
+      ret = {}
+      lines.0.map (d,i) -> ret[d] = (if v[i] == \- => null else +v[i])
+      return ret
+  fs.write-file-sync "../dist/county/index/#{index}.json", JSON.stringify(json)
   list.push(index)
-fs.write-file-sync \../dist/county/index/index.json, JSON.stringify(list.map(->"#it.csv"))
+fs.write-file-sync \../dist/county/index/index.json, JSON.stringify(list.map(->it))
 
 fs-extra.mkdirs-sync \../dist/county/category
 for prefix, headers of cat =>
@@ -69,3 +76,10 @@ for prefix, headers of cat =>
         line.push(idx[index][time][county])
       lines.push(line)
   fs.write-file-sync "../dist/county/category/#{prefix}.csv", lines.map(->it.join(\,)).join(\\n)
+  json = lines
+    .filter (d,i) -> i > 0
+    .map (v) ->
+      ret = {}
+      lines.0.map (d,i) -> ret[d] = (if v[i] == \- => null else +v[i])
+      return ret
+  fs.write-file-sync "../dist/county/category/#{prefix}.json", JSON.stringify(json)
