@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-rm -rf web/static/assets/lib/twstat/
-cp -R dist web/static/assets/lib/twstat/
